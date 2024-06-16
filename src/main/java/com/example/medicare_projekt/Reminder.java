@@ -19,4 +19,3 @@ public class Reminder {
         return time;
     }
 }
-

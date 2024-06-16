@@ -1,5 +1,7 @@
 package com.example.medicare_projekt;
 
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -9,21 +11,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import javafx.application.Platform;
-import javafx.scene.control.Alert;
 
 public class Patient implements Serializable {
     private static final long serialVersionUID = 1L;
-    private ArrayList<Patient> patients = new ArrayList<>();
     private String name;
     private LocalDate birthday;
     private ArrayList<Integer> index;
-    private List<Reminder> reminders = new ArrayList<>();
+    private List<Reminder> reminders;
 
     public Patient(String name, LocalDate birthday, ArrayList<Integer> index) {
         this.name = name;
         this.birthday = birthday;
         this.index = index;
+        this.reminders = new ArrayList<>();
     }
 
     public ArrayList<Integer> getIndex() {
@@ -80,22 +80,5 @@ public class Patient implements Serializable {
     public String toString() {
         return "Patient: " + name + ", " + birthday + ", " + index;
     }
-
-    public static class Reminder {
-        private String message;
-        private LocalDateTime time;
-
-        public Reminder(String message, LocalDateTime time) {
-            this.message = message;
-            this.time = time;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public LocalDateTime getTime() {
-            return time;
-        }
-    }
 }
+

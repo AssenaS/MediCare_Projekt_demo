@@ -13,7 +13,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class MainWindowController {
     private Stage stage;
@@ -36,11 +39,15 @@ public class MainWindowController {
     public void setMainApp(Main mainApp) {
         this.mainApp = mainApp;
     }
+
     @FXML
     private Button addButton;
 
     @FXML
     private Button viewMedicationListButton;
+
+    @FXML
+    private Button addReminderButton; // Add this line
 
     @FXML
     private TextField PatientenNameTextFeld;
@@ -68,12 +75,10 @@ public class MainWindowController {
 
     private ArrayList<Patient> arrayPatientList;
 
-
     public void initialize() {
         patientModel = new PatientModel();
         patientModel.loadDataFromFile();
         arrayPatientList = PatientModel.getPatients();
-
 
         if (tabelleName != null) {
             tabelleName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -152,7 +157,6 @@ public class MainWindowController {
         double mainWindowY = stage.getY();
         double mainStageWidth = stage.getWidth();
 
-
         double medicationStageX = mainWindowX + mainStageWidth + 10;
         double medicationStageY = mainWindowY;
 
@@ -173,6 +177,34 @@ public class MainWindowController {
 
         }
     }
+
+    @FXML
+    private void handleAddReminder() {
+        Patient selectedPatient = tabelle.getSelectionModel().getSelectedItem();
+        if (selectedPatient == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Fehler");
+            alert.setHeaderText(null);
+            alert.setContentText("Bitte wählen Sie einen Patienten aus.");
+            alert.showAndWait();
+            return;
+        }
+
+        TextInputDialog messageDialog = new TextInputDialog();
+        messageDialog.setTitle("Add Reminder");
+        messageDialog.setHeaderText("Enter reminder message:");
+        Optional<String> messageResult = messageDialog.showAndWait();
+
+        if (messageResult.isPresent()) {
+            TextInputDialog timeDialog = new TextInputDialog("yyyy-MM-dd HH:mm");
+            timeDialog.setTitle("Add Reminder");
+            timeDialog.setHeaderText("Enter reminder time (yyyy-MM-dd HH:mm):");
+            Optional<String> timeResult = timeDialog.showAndWait();
+
+            if (timeResult.isPresent()) {
+                LocalDateTime time = LocalDateTime.parse(timeResult.get(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+                selectedPatient.addReminder(messageResult.get(), time);
+            }
+        }
+    }
 }
-
-

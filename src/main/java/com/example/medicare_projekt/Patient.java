@@ -81,4 +81,3 @@ public class Patient implements Serializable {
         return "Patient: " + name + ", " + birthday + ", " + index;
     }
 }
-

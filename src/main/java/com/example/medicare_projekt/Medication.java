@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 public class Medication implements Serializable {
 
+
     Patient patient;
 
     private String medicationName;

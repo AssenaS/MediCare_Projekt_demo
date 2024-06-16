@@ -1,11 +1,13 @@
 package com.example.medicare_projekt;
 
+import com.example.medicare_projekt.Reminder;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ReminderController {
+public class ReminderManager {
     private List<Reminder> reminders = new ArrayList<>();
     private Timer timer = new Timer(true);
 

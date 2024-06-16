@@ -14,11 +14,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
 import java.time.LocalDateTime;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import java.time.LocalTime;
 
 public class MainWindowController {
@@ -42,6 +38,7 @@ public class MainWindowController {
     public void setMainApp(Main mainApp) {
         this.mainApp = mainApp;
     }
+
     @FXML
     private Button addButton;
 
@@ -64,22 +61,34 @@ public class MainWindowController {
     private TableView<Patient> tabelle;
 
     @FXML
-    private TableColumn<Patient, TextField> tabelleName;
+    private TableColumn<Patient, String> tabelleName;
 
     @FXML
-    private TableColumn<Patient, DatePicker> tabelleGeburtsdatum;
+    private TableColumn<Patient, LocalDate> tabelleGeburtsdatum;
 
     @FXML
-    private TableColumn<Patient, TextField> tabelleIndex;
+    private TableColumn<Patient, Integer> tabelleIndex;
 
     private ArrayList<Patient> arrayPatientList;
 
+    @FXML
+    private DatePicker datePicker;
+
+    @FXML
+    private ComboBox<Integer> hourComboBox;
+
+    @FXML
+    private ComboBox<Integer> minuteComboBox;
+
+    @FXML
+    private Label reminderLabel;
+
+    private ReminderManager reminderManager = new ReminderManager();
 
     public void initialize() {
         patientModel = new PatientModel();
         patientModel.loadDataFromFile();
         arrayPatientList = PatientModel.getPatients();
-
 
         if (tabelleName != null) {
             tabelleName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -91,6 +100,13 @@ public class MainWindowController {
             tabelleIndex.setCellValueFactory(new PropertyValueFactory<>("index"));
         }
         updateTableViewPatient();
+
+        for (int i = 0; i < 24; i++) {
+            hourComboBox.getItems().add(i);
+        }
+        for (int i = 0; i < 60; i += 5) {
+            minuteComboBox.getItems().add(i);
+        }
     }
 
     @FXML
@@ -106,7 +122,6 @@ public class MainWindowController {
             alert.setContentText("Bitte geben Sie einen Index ein.");
             alert.showAndWait();
             return;
-
         }
         if (name != null && !name.isEmpty() && birthday != null && indexString != null) {
             ArrayList<Integer> medikamenteIndex = new ArrayList<>();
@@ -118,29 +133,14 @@ public class MainWindowController {
                     System.out.println("Fehler beim Hinzufügen des Patienten");
                 }
             }
-            patientModel.addPatient(name,birthday, medikamenteIndex);
+            patientModel.addPatient(name, birthday, medikamenteIndex);
             patientModel.patientSerialize();
             PatientenNameTextFeld.clear();
             GeburtsdatumFeld.setValue(null);
             indexLabel.clear();
-            tabelleName = new TableColumn<>();
             updateTableViewPatient();
         }
     }
-    @FXML
-    private DatePicker datePicker;
-
-    @FXML
-    private ComboBox<Integer> hourComboBox;
-
-    @FXML
-    private ComboBox<Integer> minuteComboBox;
-
-    @FXML
-    private Label reminderLabel;
-
-    private ReminderController reminderController = new ReminderController();
-
 
     @FXML
     private void handleSetReminder() {
@@ -150,10 +150,10 @@ public class MainWindowController {
         if (date != null && hour != null && minute != null) {
             LocalDateTime reminderTime = LocalDateTime.of(date, LocalTime.of(hour, minute));
             Reminder reminder = new Reminder("Zeit für Ihre Medikamente", reminderTime);
-            reminderController.addReminder(reminder);
-            reminderLabel.setText("Erinnerung: " + reminderTime);
+            reminderManager.addReminder(reminder);
+            reminderLabel.setText("Erinnerung gesetzt für: " + reminderTime);
         } else {
-            reminderLabel.setText("Bitte wählen Sie die Uhrzeit.");
+            reminderLabel.setText("Bitte wählen Sie Datum, Stunde und Minute.");
         }
     }
 
@@ -187,7 +187,6 @@ public class MainWindowController {
         double mainWindowY = stage.getY();
         double mainStageWidth = stage.getWidth();
 
-
         double medicationStageX = mainWindowX + mainStageWidth + 10;
         double medicationStageY = mainWindowY;
 
@@ -209,5 +208,3 @@ public class MainWindowController {
         }
     }
 }
-
-

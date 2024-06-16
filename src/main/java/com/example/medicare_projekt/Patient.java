@@ -63,7 +63,7 @@ public class Patient implements Serializable {
             public void run() {
                 showReminder(reminder);
             }
-        }, Date.from(reminder.getTime().atZone(ZoneId.systemDefault()).toInstant()));
+        }, Date.from(reminder.getReminderTime().atZone(ZoneId.systemDefault()).toInstant()));
     }
 
     private void showReminder(Reminder reminder) {

@@ -16,9 +16,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
-
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import java.time.LocalTime;
+
 public class MainWindowController {
     private Stage stage;
     private Scene hauptScene;
@@ -125,30 +127,36 @@ public class MainWindowController {
             updateTableViewPatient();
         }
     }
-    private TextField patientNameField;
+    @FXML
+    private DatePicker datePicker;
 
     @FXML
-    private DatePicker patientBirthdayPicker;
+    private ComboBox<Integer> hourComboBox;
 
     @FXML
-    private TextField patientIndexField;
+    private ComboBox<Integer> minuteComboBox;
 
     @FXML
-    private TextField reminderTimeField; // New TextField for time input (HH:mm format)
+    private Label reminderLabel;
 
-    private Patient selectedPatient;
+    private ReminderController reminderController = new ReminderController();
+
 
     @FXML
-    private void handleAddReminder() {
-        if (selectedPatient != null) {
-            String reminderMessage = "Take your medication";
-            String timeString = reminderTimeField.getText();
-            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-            LocalDate date = patientBirthdayPicker.getValue(); // Assuming you have a DatePicker for the reminder date
-            LocalDateTime dateTime = LocalDateTime.of(date, LocalDateTime.parse(timeString, timeFormatter).toLocalTime());
-            selectedPatient.addReminder(reminderMessage, dateTime);
+    private void handleSetReminder() {
+        LocalDate date = datePicker.getValue();
+        Integer hour = hourComboBox.getValue();
+        Integer minute = minuteComboBox.getValue();
+        if (date != null && hour != null && minute != null) {
+            LocalDateTime reminderTime = LocalDateTime.of(date, LocalTime.of(hour, minute));
+            Reminder reminder = new Reminder("Zeit für Ihre Medikamente", reminderTime);
+            reminderController.addReminder(reminder);
+            reminderLabel.setText("Erinnerung: " + reminderTime);
+        } else {
+            reminderLabel.setText("Bitte wählen Sie die Uhrzeit.");
         }
     }
+
     @FXML
     private void updateTableViewPatient() {
         if (tabelleName != null && tabelleGeburtsdatum != null && tabelleIndex != null) {

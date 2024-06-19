@@ -104,7 +104,7 @@ public class MainWindowController {
         for (int i = 0; i < 24; i++) {
             hourComboBox.getItems().add(i);
         }
-        for (int i = 0; i < 60; i += 5) {
+        for (int i = 0; i < 60; i ++) {
             minuteComboBox.getItems().add(i);
         }
     }

@@ -5,13 +5,19 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-
+import java.time.LocalDateTime;
 import java.io.IOException;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+        ReminderManager reminderManager = new ReminderManager();
+
+        // Example: adding a reminder
+        Reminder reminder = new Reminder("Take your medicine", LocalDateTime.now().plusSeconds(10));
+        reminderManager.addReminder(reminder);
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("LogInView.fxml"));
         AnchorPane root = loader.load();
 

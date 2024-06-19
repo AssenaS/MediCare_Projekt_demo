@@ -1,6 +1,9 @@
 package com.example.medicare_projekt;
 
-import com.example.medicare_projekt.Reminder;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,12 +20,29 @@ public class ReminderManager {
     }
 
     private void scheduleReminder(Reminder reminder) {
+        long delay = reminder.getReminderTime().atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli() - System.currentTimeMillis();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println("Erinnerung: " + reminder.getMessage());
+                Platform.runLater(() -> showReminderWindow(reminder.getMessage()));
             }
-        }, reminder.getReminderTime().atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli() - System.currentTimeMillis());
+        }, delay);
+    }
+
+    private void showReminderWindow(String message) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Reminder.fxml"));
+            Stage stage = new Stage();
+            stage.setScene(new Scene(loader.load()));
+
+            ReminderController controller = loader.getController();
+            controller.setStage(stage);
+            controller.setReminderText(message);
+
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void cancelReminders() {

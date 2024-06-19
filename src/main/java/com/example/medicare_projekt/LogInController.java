@@ -45,7 +45,6 @@ public class LogInController {
                     (Stage) ((Node) event.getSource()).getScene().getWindow();
             loginStage.close();
 
-            // Load and show the main window
             FXMLLoader loader = new FXMLLoader(getClass().getResource("HauptFenster.fxml"));
             Parent hauptFenster = loader.load();
             Scene scene = new Scene(hauptFenster);

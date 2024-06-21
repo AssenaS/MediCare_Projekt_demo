@@ -104,7 +104,7 @@ public class MainWindowController {
         for (int i = 0; i < 24; i++) {
             hourComboBox.getItems().add(i);
         }
-        for (int i = 0; i < 60; i ++) {
+        for (int i = 0; i < 60; i += 1) {
             minuteComboBox.getItems().add(i);
         }
     }
@@ -143,19 +143,44 @@ public class MainWindowController {
     }
 
     @FXML
-    private void handleSetReminder() {
+    private void handleSetReminder(ActionEvent event) {
         LocalDate date = datePicker.getValue();
         Integer hour = hourComboBox.getValue();
         Integer minute = minuteComboBox.getValue();
-        if (date != null && hour != null && minute != null) {
-            LocalDateTime reminderTime = LocalDateTime.of(date, LocalTime.of(hour, minute));
-            Reminder reminder = new Reminder("Zeit für Ihre Medikamente", reminderTime);
-            reminderManager.addReminder(reminder);
-            reminderLabel.setText("Erinnerung gesetzt für: " + reminderTime);
+
+        if (date == null || hour == null || minute == null) {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setTitle("Fehler");
+            errorAlert.setHeaderText(null);
+            errorAlert.setContentText("Bitte wählen Sie Datum, Stunde und Minute.");
+            errorAlert.showAndWait();
+            return;
+        }
+
+        LocalDateTime reminderTime = LocalDateTime.of(date, LocalTime.of(hour, minute));
+
+        Patient selectedPatient = tabelle.getSelectionModel().getSelectedItem();
+
+        if (selectedPatient != null) {
+            String message = "Erinnerung für " + selectedPatient.getName() + ": Medikamente einnehmen";
+
+            reminderManager.addReminder(new Reminder(message, reminderTime));
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Erinnerung");
+            alert.setHeaderText(null);
+            alert.setContentText("Erinnerung gesetzt für: " + reminderTime);
+            alert.showAndWait();
+
         } else {
-            reminderLabel.setText("Bitte wählen Sie Datum, Stunde und Minute.");
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setTitle("Fehler");
+            errorAlert.setHeaderText(null);
+            errorAlert.setContentText("Bitte wählen Sie Datum, Stunde und Minute.");
+            errorAlert.showAndWait();
         }
     }
+
 
     @FXML
     private void updateTableViewPatient() {
@@ -200,11 +225,27 @@ public class MainWindowController {
         this.scene = scene;
     }
 
+    /*
     public void handleMedikamenteBearbeiten(MouseEvent mouseEvent) {
         Patient selectedPatient = (Patient) tabelle.getSelectionModel().getSelectedItem();
 
-        if(selectedPatient != null) {
+        Reminder reminder = new Reminder(reminder.getReminderTime());
+        if (selectedPatient != null) {
+            try {
 
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+
+     */
+
+
+
+    public void handleMedikamenteReminder(MouseEvent mouseEvent) {
+        Patient selectedPatient = (Patient) tabelle.getSelectionModel().getSelectedItem();
+
+
     }
 }

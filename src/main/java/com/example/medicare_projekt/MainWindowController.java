@@ -162,7 +162,7 @@ public class MainWindowController {
         Patient selectedPatient = tabelle.getSelectionModel().getSelectedItem();
 
         if (selectedPatient != null) {
-            String message = "Erinnerung für " + selectedPatient.getName() + ": Medikamente einnehmen";
+            String message = "Erinnerung für " + selectedPatient.getName()+", "+selectedPatient.getBirthday()+ ": Medikamente einnehmen";
 
             reminderManager.addReminder(new Reminder(message, reminderTime));
 

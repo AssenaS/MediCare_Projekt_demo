@@ -80,4 +80,5 @@ public class Patient implements Serializable {
     public String toString() {
         return "Patient: " + name + ", " + birthday + ", " + index;
     }
+
 }
